@@ -1,4 +1,4 @@
-FILENAME = "Data.txt"
+FILENAME = "TestData.txt"
 
 def getFileContents(fn):
     fp = open(fn,"r")
@@ -41,13 +41,17 @@ for i in range(len(rules)):
 total = 0
 for page in pages:
 
-    pagePassed = True
+    pagePassed = False
     for rule in rules:
         #Verify both elements of the rule exist in the page
         if (rule[0] in page) and (rule[1] in page):
         
             if page.index(rule[0]) > page.index(rule[1]):
-                pagePassed = False
+                pagePassed = True
+                buffer = page[page.index(rule[0])]
+                page[page.index(rule[0])] = page[page.index(rule[1])]
+                page[page.index(rule[1])] = buffer
+
     if pagePassed:
         total += getPageMiddle(page)
 
