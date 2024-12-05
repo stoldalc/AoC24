@@ -23,32 +23,74 @@ def formatData(fc):
         results.append(buffer)
     return results
 
+def formatedDebug(lineAtI,current,type):
+    print("Failed: ")
+    print("\tCurrent: " + str(current))
+    print("\tline at i: " + str(lineAtI))
+    print("\t" + type + " than check: " + str(lineAtI <= current))
+    print("\tGap check: " + str((abs(lineAtI-current) > 3)))
 
 def checkDec(line):
 
     current = line[0]
+    badLevel = False
 
-#Change this into a while loop that steps throug each item and checks the 
-# last item using the "current" var,
-# If the item breaks the rule
-#   Set a flag so we know the rule has been broken once/verify the flag is not already set
-#   if the flag has already been set we return false as it therfore will require more then one removal
-#   #We then move our pointer forward and do not set a new new current as we want to examine 
-#       current >= line[i+1]
-    for i in range(1,len(line)):
+    #for i in range(1,len(line)):
+    i = 1
+    while i < len(line):
         if line[i] >= current or (abs(line[i]-current) > 3):
-            return False
-        current = line[i]
+
+            if not badLevel:
+                print("DEC - Removing: " + str(current))
+                badLevel = True
+                current = line[i]
+                i += 1
+
+                if i >= len(line):
+                    return True 
+                if line[i] >= current or (abs(line[i]-current) > 3):
+                    #formatedDebug(line[i],current,"greater")
+                    return False
+
+            else:
+                #formatedDebug(line[i],current,"greater")
+                return False
+        else:
+            current = line[i]
+            i += 1
     return True
+
 
 def checkInc(line):
 
     current = line[0]
-
-    for i in range(1,len(line)):
+    badLevel = False
+    #for i in range(1,len(line)):
+    i = 1
+    while i < len(line):
+    
         if line[i] <= current or (abs(line[i]-current) > 3):
-            return False
-        current = line[i]
+            if not badLevel:
+                print("INC - Removing: " + str(current))
+                badLevel = True
+                current = line[i]
+                i += 1
+
+
+                if i >= len(line):
+                    return True 
+
+                if line[i] <= current or (abs(line[i]-current) > 3):
+                    #formatedDebug(line[i],current,"less")
+                    return False
+
+            else:
+                #formatedDebug(line[i],current,"less")
+                return False
+        else:
+            current = line[i]
+            i += 1
+            
     return True
 
 reports = formatData(getFileContents(FILENAME))
@@ -60,6 +102,8 @@ for report in reports:
     if checkDec(report) or checkInc(report):
         print("Report found safe: " + str(report) )
         total += 1
+    else:
+        print("Report found NOT safe: " + str(report) )
 print(total)
 
 #print(checkDec(reports[5]))

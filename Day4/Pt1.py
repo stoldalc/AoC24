@@ -1,5 +1,5 @@
 
-FILENAME = "Day4\\Data.txt"
+FILENAME = "Data.txt"
 
 def getFileContents(fn):
 
@@ -23,7 +23,7 @@ for i in range(matrixH):
     row = []
 
     for j in range(matrixW):
-        row.append(".")
+        row.append(" ")
     emptyMatrix.append(row)
 
 #Verify the passed in position is a valid one
