@@ -1,4 +1,4 @@
-FILENAME = "TestData.txt"
+FILENAME = "Data.txt"
 
 def getFileContents(fn):
     fp = open(fn,"r")
@@ -16,6 +16,7 @@ fc = getFileContents(FILENAME)
 splitIndex = fc.index("")
 
 rules = fc[:splitIndex]
+
 pages = fc[splitIndex+1:]
 
 
@@ -37,32 +38,36 @@ def getPageMiddle(page):
 for i in range(len(rules)):
     rules[i] = generateRule(rules[i])
 
-
+rules = sorted(rules, key=lambda x: x[0])
+#print(rules)
 total = 0
+pageCount = 0
 for page in pages:
 
+    
+
+    i = 0
     pagePassed = False
-    for rule in rules:
+    while i < len(rules):
+    #for rule in rules:
         #Verify both elements of the rule exist in the page
-        if (rule[0] in page) and (rule[1] in page):
+        if (rules[i][0] in page) and (rules[i][1] in page):
         
-            if page.index(rule[0]) > page.index(rule[1]):
+            if page.index(rules[i][0]) > page.index(rules[i][1]):
                 pagePassed = True
-                buffer = page[page.index(rule[0])]
-                page[page.index(rule[0])] = page[page.index(rule[1])]
-                page[page.index(rule[1])] = buffer
+                buffer = page[page.index(rules[i][0])]
+                page[page.index(rules[i][0])] = page[page.index(rules[i][1])]
+                page[page.index(rules[i][1])] = buffer
+                i = 0
+            else:
+                i += 1
+        else:
+            i += 1
+        #print("Scanning rule: " + str(i) + " of " + str(len(rules)))
+    #print("Completed page: " + str(pageCount) + " of " + str(len(pages)))
+    pageCount += 1
 
     if pagePassed:
         total += getPageMiddle(page)
 
 print(total)
-
-
-
-
-
-
-    
-
-
-
