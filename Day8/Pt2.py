@@ -1,5 +1,6 @@
+import math
 FILENAME = "Data.txt"
-#FILENAME = "Day6\\TestData.txt"
+#FILENAME = "Day8\\Data.txt"
 def getFileContents(fn):
     fp = open(fn,"r")
     fc = fp.readlines()
@@ -44,6 +45,8 @@ def findNodes(matrix):
             
     return nodeDict
 
+
+
 def isValidPos(matrix,x,y):
 
 
@@ -59,6 +62,22 @@ def getLine(matrix,x1,y1,x2,y2):
     slope = (y2-y1)/(x2-x1)
 
     interc = y1 - (slope*x1)
+
+
+    run = x2 - x1
+    if run == 0:
+        slope = 0
+
+    if run < 0:
+        run = x1-x2
+    
+    rise = y2-y1
+    gcd_ = math.gcd(abs(rise),run)
+
+    slope = (rise//gcd_)//(run//gcd_)
+
+
+
 
     line = [[x1,y1],[x2,y2]]
 
@@ -137,6 +156,7 @@ for key in allNodes:
                 if i != j:
                     line = getLine(fc,values[i][0],values[i][1],values[j][0],values[j][1])
                     antiNodePlacer(blankMatrix,line)
+                    #matrixPrint(blankMatrix)
 
 
 matrixPrint(blankMatrix)

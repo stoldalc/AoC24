@@ -1,2 +1,2 @@
-TestData.txt
-Data.txt
+*Data*.txt
+.vscode*

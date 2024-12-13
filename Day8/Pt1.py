@@ -24,8 +24,7 @@ def formatFileContent(fc):
     return results
 
 fc = formatFileContent(fc)
-for line in fc:
-    print(line)
+
 
 
 def findNodes(matrix):
