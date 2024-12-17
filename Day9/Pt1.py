@@ -1,4 +1,4 @@
-FILENAME = "TestData.txt"
+FILENAME = "Data.txt"
 #FILENAME = "Day6\\TestData.txt"
 def getFileContents(fn):
     fp = open(fn,"r")
@@ -7,10 +7,6 @@ def getFileContents(fn):
     for i in range(len(fc)):
         fc[i] = fc[i].strip()
     return fc
-
-
-
-fc = getFileContents(FILENAME)
 
 def formatFileContent(fc):
     
@@ -43,105 +39,110 @@ def sortData(fc):
     return results
 
 
+def data2DiskFormat(fc):
 
-def formatedPrint(fileList):
 
-
+    result = []
 
     index = 0
 
-    for file in fileList:
+    for file in fc:
 
-        for i in range(file[0]):
-            print(index,end="")
+        for i in range(int(file[0])):
+
+            # for c in str(index):
+            #     result.append(c)
+
+            result.append(str(index))
+
         if len(file) == 2:
-            for i in range(file[1]):
-                print(".",end="")
+            for i in range(int(file[1])):
+                result.append(".")
         index += 1
-    print()
-
-def file2String(file,index):
-
-    result = ""
-
-    for i in range(file[0]):
-        result += str(index)
     return result
 
-def sortFiles(files):
+def formatedDiskPrinter(diskStr):
+
+
+    print("Disk Data: ", end="")
+
+    for bit in diskStr:
+        print(bit,end="")
+    print()
+
+def deFragDisk(diskStr):
+
 
     i = 0
-    result = ""
 
-    fragCleared = []
+    endI = len(diskStr)-1
 
-    #Step through all of the files
-    while i < len(files):
+    while i < len(diskStr) and endI >= 0 and endI >= i:
 
+        if diskStr[i] != ".":
+            i += 1
+        elif diskStr[i] == ".":
 
-        #Create the instance of the current file we are looking for 
-        # we also add this index to the file and make sure we have not already looked at it
-        if i not in fragCleared:
-            fragCleared.append(i)
+            if diskStr[endI] != ".":
+                diskStr[i] = diskStr[endI]
+                diskStr.pop(endI)
+                endI -= 1
+            else:
+                while diskStr[endI] == ".":
+                    #print("Current disk position is: ",diskStr[endI])
+                    endI -= 1
+                    
+                diskStr[i] = diskStr[endI]
+                diskStr.pop(endI)
+                #print("Len of diskstr: ",len(diskStr))
+                #print("endI Index: ",endI)
+                endI -= 1
+        #formatedDiskPrinter(diskStr)
 
-            file = files[i]
-
-            result += file2String(file,i)
-
-
-            #We need to check and see if the file has botht the block size and the free space after it
-            if len(file) == 2:
-
-                #Make our index counter for our internal for loop
-                j = len(files)-1
-
-                #File we use to assist us in breakuing out of our while loop
-                fileFound = False
-                while j >= 0 and not fileFound:
-
-                    #Check if the file we are looking at in our internal loop takes up the amount of space 
-                    # that the file we are looking at in our i loop has behind it and  verify its not in the fragCleared list
-                    #print("Comparing: " + str(files[j][0]) + str)
-                    if(j not in fragCleared):
-                        if files[j][0] == file[1]:
-                            fragCleared.append(j)
-                            fileFound = True
-                            result += file2String(files[j],j)
-                        elif files[j][0] < file[1]:
-
-                            fragCleared.append(j)
-                            result += file2String(files[j],j)
-
-                            file[1] -= files[j][0]
-                            j = len(files)
-
-                    j -= 1
-        print(result)
-        print("Positions defragged: ", fragCleared)
-
-
-
-        i+=1
-    print(result)
-
-        
-
+    return diskStr
 
 
 def calculateChecksum(data):
 
     total = 0
 
-    for i in range(len(data)):
+    index = 0
 
-        total +=  i * int(data[i])
+    for bit in data:
+
+        if bit != ".":
+            total += index * int(bit)
+            index += 1
+    print("Checksum final index: ", index)
     return total
 
 
-fc = formatFileContent(fc)
+def countBits(diskStr):
 
-fileList = sortData(fc)
-#print(fileList)
-#formatedPrint(fileList)
+    total = 0
 
-sortFiles(fileList)
+    for bit in diskStr:
+        if bit != ".":
+            total += 1
+    return total
+
+
+fc = getFileContents(FILENAME)
+
+fc = sortData(fc[0])
+print("Number of file pairs: ",len(fc))
+diskStr = data2DiskFormat(fc)
+
+
+
+print("Total File entrys including empty space: ",len(diskStr))
+print("Total bits: ", countBits(diskStr))
+
+
+#formatedDiskPrinter(diskStr)
+defraggedDisk = deFragDisk(diskStr)
+#print(defraggedDisk)
+#formatedDiskPrinter(defraggedDisk)
+print("Checksum: ",calculateChecksum(defraggedDisk))
+
+
